@@ -34,3 +34,6 @@ https://github.com/nihui/opencv-mobile
 ## screenshot
 ![](screenshot.png)
 
+## reference  
+https://github.com/nihui/ncnn-android-nanodet  
+https://github.com/Megvii-BaseDetection/YOLOX  

@@ -3,6 +3,7 @@
     <string name="app_name">yolox_demo</string>
     <string-array name="model_array">
         <item>yolox-nano</item>
+        <item>yolox-tiny</item>
     </string-array>
     <string-array name="cpugpu_array">
         <item>CPU</item>

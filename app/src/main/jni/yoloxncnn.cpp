@@ -184,20 +184,24 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_loadModel(JNIEnv
     const char* modeltypes[] =
     {
         "yolox-nano",
+        "yolox-tiny",
     };
 
     const int target_sizes[] =
     {
+        416,
         416,
     };
 
     const float mean_vals[][3] =
     {
         {255.f * 0.485f, 255.f * 0.456, 255.f * 0.406f},
+        {255.f * 0.485f, 255.f * 0.456, 255.f * 0.406f},
     };
 
     const float norm_vals[][3] =
     {
+        {1 / (255.f * 0.229f), 1 / (255.f * 0.224f), 1 / (255.f * 0.225f)},
         {1 / (255.f * 0.229f), 1 / (255.f * 0.224f), 1 / (255.f * 0.225f)},
     };
 

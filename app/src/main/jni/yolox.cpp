@@ -351,6 +351,7 @@ int Yolox::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_t
     ncnn::copy_make_border(in, in_pad, 0, hpad, 0, wpad, ncnn::BORDER_CONSTANT, 114.f);
 
     // so for 0-255 input image, rgb_mean should multiply 255 and norm should div by std.
+    // new release of yolox has deleted this preprocess,if you are using new release please don't use this preprocess.
     in_pad.substract_mean_normalize(mean_vals, norm_vals);
 
     ncnn::Extractor ex = yolox.create_extractor();

@@ -162,26 +162,24 @@ static void nms_sorted_bboxes(const std::vector<Object>& faceobjects, std::vecto
             picked.push_back(i);
     }
 }
-
-static int generate_grids_and_stride(const int target_size, std::vector<int>& strides, std::vector<GridAndStride>& grid_strides)
+static void generate_grids_and_stride(const int target_w, const int target_h, std::vector<int>& strides, std::vector<GridAndStride>& grid_strides)
 {
-    for (auto stride : strides)
-    {
-        int num_grid = target_size / stride;
-        for (int g1 = 0; g1 < num_grid; g1++)
-        {
-            for (int g0 = 0; g0 < num_grid; g0++)
-            {
-               // __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "aaaaaaaaaaaaaa");
-
-
-                grid_strides.push_back((GridAndStride){g0, g1, stride});
-               // __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "bbbbbbbbbbbbbbbbbbb");
-            }
-        }
-    }
-
-    return 0;
+	for (auto stride : strides)
+	{
+		int num_grid_w = target_w / stride;
+		int num_grid_h = target_h / stride;
+		for (int g1 = 0; g1 < num_grid_h; g1++)
+		{
+			for (int g0 = 0; g0 < num_grid_w; g0++)
+			{
+				GridAndStride gs;
+				gs.grid0 = g0;
+				gs.grid1 = g1;
+				gs.stride = stride;
+				grid_strides.push_back(gs);
+			}
+		}
+	}
 }
 
 static void generate_yolox_proposals(std::vector<GridAndStride> grid_strides, const ncnn::Mat& feat_blob, float prob_threshold, std::vector<Object>& objects)
@@ -345,8 +343,8 @@ int Yolox::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_t
 
     // pad to target_size rectangle
     // yolov5/utils/datasets.py letterbox
-    int wpad = target_size-w;//(w + 31) / 32 * 32 - w;
-    int hpad = target_size-h;//(h + 31) / 32 * 32 - h;
+    int wpad = (w + 31) / 32 * 32 - w;
+    int hpad = (h + 31) / 32 * 32 - h;
     ncnn::Mat in_pad;
     ncnn::copy_make_border(in, in_pad, 0, hpad, 0, wpad, ncnn::BORDER_CONSTANT, 114.f);
 
@@ -366,7 +364,7 @@ int Yolox::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_t
 
         std::vector<int> strides = {8, 16, 32}; // might have stride=64
         std::vector<GridAndStride> grid_strides;
-        generate_grids_and_stride(target_size, strides, grid_strides);
+        generate_grids_and_stride(in_pad.w, in_pad.h, strides, grid_strides);
         generate_yolox_proposals(grid_strides, out, prob_threshold, proposals);
     }
 
